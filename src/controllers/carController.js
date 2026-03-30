@@ -15,4 +15,41 @@ async function getCar(req, res) {
     res.json(car);
 }
 
-export default {listCars, getCar};
+async function createCar(req, res) {
+    const { modelo, marca, ano } = req.body;
+    
+    if (!modelo || !marca || !ano) {
+        return res.status(400).json({erro: "Dados insuficientes"});
+    }
+    
+    const car = await carRepository.createCar({modelo, marca, ano});
+    res.status(201).json(car);
+}
+
+async function updateCar(req, res) {
+    const { modelo, marca, ano } = req.body;
+    
+    if (!modelo || !marca || !ano) {
+        return res.status(400).json({erro: "Dados insuficientes"});
+    }
+
+    const updatedCar = await carRepository.updateCar(req.params.id, {modelo, marca, ano});
+
+    if (!updatedCar) {
+        return res.status(404).json({erro: "Carro não encontrado"});
+    }
+
+    res.json(updatedCar);
+}
+
+async function deleteCar(req, res) {
+    const success = await carRepository.deleteCar(req.params.id);
+
+    if (!success) {
+        return res.status(404).json({erro: "Carro não encontrado"});
+    }
+
+    res.status(204).send();
+}
+
+export default {listCars, getCar, createCar, updateCar, deleteCar};

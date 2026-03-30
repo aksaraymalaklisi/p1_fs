@@ -21,4 +21,32 @@ export async function getCarById(id) {
     return new Car(row.id, row.modelo, row.marca, row.ano);
 };
 
-export default {getAllCars, getCarById};
+export async function createCar(car) {
+    const [result] = await db.query(
+        'INSERT INTO carros (modelo, marca, ano) VALUES (?, ?, ?)',
+        [car.modelo, car.marca, car.ano]
+    );
+
+    return new Car(result.insertId, car.modelo, car.marca, car.ano);
+};
+
+export async function updateCar(id, car) {
+    const [result] = await db.query(
+        'UPDATE carros SET modelo = ?, marca = ?, ano = ? WHERE id = ?',
+        [car.modelo, car.marca, car.ano, id]
+    );
+
+    if (result.affectedRows === 0) return null;
+    return new Car(id, car.modelo, car.marca, car.ano);
+};
+
+export async function deleteCar(id) {
+    const [result] = await db.query(
+        'DELETE FROM carros WHERE id = ?',
+        [id]
+    );
+
+    return result.affectedRows > 0;
+};
+
+export default {getAllCars, getCarById, createCar, updateCar, deleteCar};
