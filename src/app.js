@@ -1,5 +1,6 @@
 import express from "express";
-import router from "./routes/index.js";
+import userRouter from "./routes/userRoutes.js";
+import carRouter from "./routes/carRoutes.js";
 import logger from "./middlewares/logger.js";
 
 const app = express();
@@ -10,7 +11,10 @@ app.use(express.json());
 // Logger middleware
 app.use(logger);
 
-// Router
-app.use(router);
+// User Router
+app.use(userRouter);
+
+// Car Router
+app.use(carRouter);
 
 export default app;
