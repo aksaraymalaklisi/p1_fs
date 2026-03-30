@@ -11,7 +11,7 @@ export async function getAllCars() {
 
 export async function getCarById(id) {
     const [rows] = await db.query(
-        'SELECT * FROM carros WHERE id = ?', {id}
+        'SELECT * FROM carros WHERE id = ?', [id]
     );
 
     if (!rows[0]) return null;
