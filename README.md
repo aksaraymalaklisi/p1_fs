@@ -40,3 +40,47 @@ docker compose down
 ```
 
 Utilize `-v` para eliminar os volumes e caso queira apagar o banco de dados ou recriá-lo.
+
+## Uso da API
+
+A API roda na porta `3000` e provê dois recursos principais. Ambos suportam operações padrão (`GET`, `POST`, `PUT`, `DELETE`).
+
+### Carros (`/cars`)
+
+- **Listar todos:** `GET http://localhost:3000/cars`
+- **Buscar por ID:** `GET http://localhost:3000/cars/:id`
+- **Remover por ID:** `DELETE http://localhost:3000/cars/:id`
+
+**Criar novo carro:**
+```bash
+curl -X POST localhost:3000/cars \
+  -H "Content-Type: application/json" \
+  -d '{"modelo":"Fusca", "marca":"VW", "ano":1970}'
+```
+
+**Atualizar carro existente:**
+```bash
+curl -X PUT localhost:3000/cars/1 \
+  -H "Content-Type: application/json" \
+  -d '{"modelo":"Fusca", "marca":"Volkswagen", "ano":1971}'
+```
+
+### Usuários (`/users`)
+
+- **Listar todos:** `GET http://localhost:3000/users`
+- **Buscar por ID:** `GET http://localhost:3000/users/:id`
+- **Remover por ID:** `DELETE http://localhost:3000/users/:id`
+
+**Criar novo usuário:**
+```bash
+curl -X POST localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Carlos"}'
+```
+
+**Atualizar usuário existente:**
+```bash
+curl -X PUT localhost:3000/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Carlos Silva"}'
+```
