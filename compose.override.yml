@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      target: dev  # Altera a compilação para o Dev Stage (nodemon)
+    image: p1_fs_api:dev
+    # Usamos 'bind mount' para ligar nossa pasta local com a do container.
+    # Isso faz com que suas edições sejam detectadas pelo nodemon sem precisar
+    # recriar ou buildar a imagem de novo!
+    volumes:
+      - .:/app
+      - /app/node_modules # Truque do docker para proteger os modulos compilados do Linux

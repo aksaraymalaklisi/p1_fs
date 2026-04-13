@@ -1,23 +1,46 @@
 services:
   mongodb:
     image: mongo:8
-    container_name: mongo_fullstack
+    container_name: mongo_fs
     ports:
-    - "27019:27017"
+    - "27019:27017" # 27017 internamente, 27019 no seu host
     volumes:
       - mongo_data:/data/db
 
   mysql:
     image: mysql:9
-    container_name: mysql_fullstack
+    container_name: mysql_fs
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: loja_de_carros
     ports:
-      - "3307:3306"
+      - "3307:3306" # 3306 internamente, 3307 no seu host
     volumes:
       - mysql_data:/var/lib/mysql
+
+  api:
+    build:
+      context: .
+      target: prod  # Por padrão, se não tiver override, usamos a de prod
+    image: p1_fs_api:prod
+    container_name: api_fs
+    ports:
+      - "3000:3000"
+    environment:
+      # Repare que internamente, eles se comunicam através da rede do Docker
+      # usando os Nomes dos containers e as Portas Originais, não as mapeadas!
+      - MYSQL_HOST=mysql_fs
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=loja_de_carros
+      - MONGO_HOST=mongo_fs
+      - MONGO_PORT=27017
+      - MONGO_DB=banco
+    depends_on:
+      - mongodb
+      - mysql
 
 volumes:
   mongo_data:

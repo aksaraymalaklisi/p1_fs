@@ -1,55 +1,53 @@
-import carRepository from "../repositories/carRepository.js";
+import carService from "../services/carService.js";
 
 async function listCars(req, res) {
-    const cars = await carRepository.getAllCars();
-    res.json(cars); 
+    try {
+        const cars = await carService.listCars();
+        res.json(cars); 
+    } catch (e) {
+        res.status(500).json({erro: e.message});
+    }
 }
 
 async function getCar(req, res) {
-    const car = await carRepository.getCarById(req.params.id);
-
-    if (!car) {
-        return res.status(404).json({erro: "Carro não encontrado"});
+    try {
+        const car = await carService.getCar(req.params.id);
+        if (!car) return res.status(404).json({erro: "Carro não encontrado"});
+        res.json(car);
+    } catch (e) {
+        res.status(500).json({erro: e.message});
     }
-
-    res.json(car);
 }
 
 async function createCar(req, res) {
-    const { modelo, marca, ano } = req.body;
-    
-    if (!modelo || !marca || !ano) {
-        return res.status(400).json({erro: "Dados insuficientes"});
+    try {
+        // A validação de Zod garante que modelo, marca e ano estão corretos
+        const car = await carService.createCar(req.body);
+        res.status(201).json(car);
+    } catch (e) {
+        res.status(500).json({erro: e.message});
     }
-    
-    const car = await carRepository.createCar({modelo, marca, ano});
-    res.status(201).json(car);
 }
 
 async function updateCar(req, res) {
-    const { modelo, marca, ano } = req.body;
-    
-    if (!modelo || !marca || !ano) {
-        return res.status(400).json({erro: "Dados insuficientes"});
+    try {
+        // A validação de Zod garante que modelo, marca e ano estão corretos
+        const updatedCar = await carService.updateCar(req.params.id, req.body);
+        if (!updatedCar) return res.status(404).json({erro: "Carro não encontrado"});
+        res.json(updatedCar);
+    } catch (e) {
+        res.status(500).json({erro: e.message});
     }
-
-    const updatedCar = await carRepository.updateCar(req.params.id, {modelo, marca, ano});
-
-    if (!updatedCar) {
-        return res.status(404).json({erro: "Carro não encontrado"});
-    }
-
-    res.json(updatedCar);
 }
 
 async function deleteCar(req, res) {
-    const success = await carRepository.deleteCar(req.params.id);
-
-    if (!success) {
-        return res.status(404).json({erro: "Carro não encontrado"});
+    try {
+        const success = await carService.deleteCar(req.params.id);
+        if (!success) return res.status(404).json({erro: "Carro não encontrado"});
+        res.status(204).send();
+    } catch (e) {
+        res.status(500).json({erro: e.message});
     }
-
-    res.status(204).send();
 }
 
 export default {listCars, getCar, createCar, updateCar, deleteCar};

@@ -1,5 +1,5 @@
-import {default as db} from "../config/mysql.js"; // Coisa esquisita. Lembre-se de corrigir os imports para default
-import Car from "../models/carModel.js"; // e named, para evitar essas decisões esotéricas do alias.
+import {default as db} from "../config/mysql.js";
+import Car from "../models/carModel.js";
 
 export async function getAllCars() {
     const [rows] = await db.query('SELECT * FROM carros');
